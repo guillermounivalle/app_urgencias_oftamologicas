@@ -132,8 +132,8 @@ const Register = (props) => {
 			</View>
 
 		</ScrollView>
-		)
-	}
+		);
+	};
 
 const styles = StyleSheet.create({
 	inputGroup: {

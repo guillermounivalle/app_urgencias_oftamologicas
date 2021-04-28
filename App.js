@@ -14,8 +14,9 @@ LogBox.ignoreLogs(['Setting a timer for a long period of time'])
 const AppStack = () => {
 	return(
 		<Stack.Navigator>
-			<Stack.Screen  name="Register" component={Register}/>
+			
 			<Stack.Screen  name="Login" component={Login}/>
+			<Stack.Screen  name="Register" component={Register}/>
 			<Stack.Screen  name="Home" component={Home}/>
 		</Stack.Navigator>
 	);
