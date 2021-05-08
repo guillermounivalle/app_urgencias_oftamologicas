@@ -1,35 +1,55 @@
-import React, {useState} from 'react'
+import React from 'react';
+import {createStackNavigator} from '@react-navigation/stack';
 import { View, Text, Button, ScrollView, StyleSheet, TextInput} from 'react-native';
 import firebase from '../controllers/firebase';
+import {regex} from '../shared/regex';
+import * as actions from '../redux_folder/actions/actionsCreators';
+import {connect} from 'react-redux';
+import {userinfo} from '../redux_folder/actions/actionsCreators';
 
-const Login = (props) => {
 
-    //Validación de caracteres especiales en email y contraseña
-	let emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-	let passwordRegex = /[$%&|?()<>#]/;
 
-	const [state, setState] = useState({
-		id: "",
+class Login extends React.Component {
+    constructor(){
+        super();
+        this.state = {
+            id: "",
 			name:"",
 			lastname:"",
-			email:"",
-			password:"",
+			email:"Jara@gmail.com",
+			password:"1234",
             speciality:"",
             password1: ""
-	});
+        };
 
-    const handleChangeText = (name, value) => {
-		setState({ ...state, [name]: value});
-	};
+        this.handleChangeText = this.handleChangeText.bind(this);
+        this.resetInput = this.resetInput.bind(this);
+        this.verifyCorrectEmailAndPassword = this.verifyCorrectEmailAndPassword.bind(this);
+        this.verifyPassword = this.verifyPassword.bind(this);
+        this.verifyuserExist = this.verifyuserExist.bind(this);
 
-	const resetInput = () => {
-		setState({
+
+    };
+    componentDidMount(){
+        
+    }
+
+    handleChangeText = (name, value) => {
+		this.setState({ [name]: value});
+    };
+
+    
+    resetInput = () => {
+		this.setState({
 			email:"",
 			password:"",
 		});
-    };	
-
-    const verifyCorrectEmailAndPassword = (email, password) =>{
+    };
+    
+    
+    verifyCorrectEmailAndPassword = (email, password) =>{
+        let emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+        let passwordRegex = /[$%&|?()<>#]/;
         if(emailRegex.test(email) === false || passwordRegex.test(password) === true){
             return false;
         }else{
@@ -37,30 +57,34 @@ const Login = (props) => {
         };
     };
 
-    const verifyPassword = (password1) => {
-        if(password1 == state.password ){
+
+    verifyPassword = (password1) => {
+        if(password1 == this.state.password ){
             return true;
         }else{
             return false;
         };        
     };
 
-    const verifyuserExist = async () => {
-        const email = state.email;
-        const password = state.password;
-        if(verifyCorrectEmailAndPassword(email, password) === false){
+//this.props.actions para enviar
+//this.props.
+
+    verifyuserExist = async () => {
+        const email = this.state.email;
+        const password = this.state.password;
+        if(this.verifyCorrectEmailAndPassword(email, password) === false){
             alert('El usuario o contraseña no es válido');
             return;
         }else{
             const user = firebase.db.collection('medicalstaff');
-            const snapshot = await user.where('email', '==', state.email).get();
+            const snapshot = await user.where('email', '==', this.state.email).get();
             if (snapshot.empty) {
                 alert("La cuenta de usuario no está registrada")
                 return;
             }
             else{
                 snapshot.forEach(doc => {
-                    setState({
+                    this.setState({
                         id:doc.id,
                         name: doc.data().name,
                         lastname: doc.data().lastname,
@@ -69,41 +93,56 @@ const Login = (props) => {
                         password1: doc.data().password
                     });
                 });
-                if(verifyPassword(state.password1) === true){
-                    resetInput();
-                    props.navigation.navigate('Home');
+                if(this.verifyPassword(this.state.password1) === true){
+                    this.resetInput();
+                    this.props.navigation.navigate('Home');
                 }
                 else{
                     alert("Contraseña incorrecta");
-                }
+                };
             };
         };
     };
 
-		
 
-    return (
-		<ScrollView style={styles.container}>
-			<View style={styles.inputGroup}>
-			    <TextInput 
-					placeholder="Email"
-					onChangeText={value => handleChangeText("email", value)}
-					value={state.email}
-				/>
-			</View>
-			<View style={styles.inputGroup}>
-			    <TextInput 
-					placeholder="Password"
-					onChangeText={value => handleChangeText("password", value)}
-					value={state.password}
-				/>
-			</View>
-			<View style={styles.inputGroup}>
-				<Button title="Login" onPress={() => verifyuserExist()}/>
-			</View>
-		</ScrollView>
-		);
-	};
+    render(){
+        console.log('=====> '+ JSON.stringify(this.props));
+        return (
+            <ScrollView style={styles.container}>
+                <View style={styles.inputGroup}>
+                    <TextInput 
+                        placeholder="Email"
+                        onChangeText={value => this.handleChangeText("email", value)}
+                        value={this.state.email}
+                    />
+                </View>
+                <View style={styles.inputGroup}>
+                    <TextInput 
+                        placeholder="Password"
+                        onChangeText={value => this.handleChangeText("password", value)}
+                        value={this.state.password}
+                    />
+                </View>
+                <View style={styles.inputGroup}>
+                    <Button title="Login" onPress={() => this.verifyuserExist()}/>
+                </View>
+            </ScrollView>
+        );
+    };
+};
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+	return{
+        userinfo : (user) => {dispatch(userinfo(ownProps.user))}
+    };
+};
+
+const mapStateToProps = state => {
+    return {
+        userinfo: state.userinfo
+    }
+}
+
 
 const styles = StyleSheet.create({
 	inputGroup: {
@@ -120,4 +159,13 @@ const styles = StyleSheet.create({
 });	
 
 
-export default Login;
+export default connect(mapStateToProps)(Login);
+
+
+
+     
+
+
+
+
+
