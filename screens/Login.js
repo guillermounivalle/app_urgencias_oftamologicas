@@ -106,7 +106,7 @@ class Login extends React.Component {
 
 
     render(){
-        console.log('=====> '+ JSON.stringify(this.props));
+        console.log('=====> '+ JSON.stringify(this.props.userinfo));
         return (
             <ScrollView style={styles.container}>
                 <View style={styles.inputGroup}>
@@ -131,9 +131,9 @@ class Login extends React.Component {
     };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch) => {
 	return{
-        userinfo : (user) => {dispatch(userinfo(ownProps.user))}
+        userinfo : (user) => dispatch(userinfo(user));
     };
 };
 
