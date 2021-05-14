@@ -2,7 +2,7 @@ import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import { View, Text, Button, ScrollView, StyleSheet, TextInput} from 'react-native';
 import firebase from '../controllers/firebase';
-import {regex} from '../shared/regex';
+import regexEvaluator from '../shared/regex';
 import * as actions from '../redux_folder/actions/actionsCreators';
 import {connect} from 'react-redux';
 import {userinfo} from '../redux_folder/actions/actionsCreators';
@@ -27,6 +27,7 @@ class Login extends React.Component {
         this.verifyCorrectEmailAndPassword = this.verifyCorrectEmailAndPassword.bind(this);
         this.verifyPassword = this.verifyPassword.bind(this);
         this.verifyuserExist = this.verifyuserExist.bind(this);
+        this.lowerCaseEmail = this.lowerCaseEmail.bind(this);
 
 
     };
@@ -46,10 +47,15 @@ class Login extends React.Component {
 		});
     };
     
+    lowerCaseEmail = (value) => {
+		const email = value;
+		const lowercaseemail = email.toLowerCase();
+		return lowercaseemail;
+    };
     
     verifyCorrectEmailAndPassword = (email, password) =>{
-        let emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-        let passwordRegex = /[$%&|?()<>#]/;
+        let emailRegex = regexEvaluator.emailRegex;
+		let passwordRegex = regexEvaluator.passwordRegex;
         if(emailRegex.test(email) === false || passwordRegex.test(password) === true){
             return false;
         }else{
@@ -106,13 +112,13 @@ class Login extends React.Component {
 
 
     render(){
-        console.log('=====> '+ JSON.stringify(this.props.userinfo));
+        //console.log('=====> '+ JSON.stringify(this.props.userinfo));
         return (
             <ScrollView style={styles.container}>
                 <View style={styles.inputGroup}>
                     <TextInput 
                         placeholder="Email"
-                        onChangeText={value => this.handleChangeText("email", value)}
+                        onChangeText={value => this.handleChangeText("email",  this.lowerCaseEmail(value))}
                         value={this.state.email}
                     />
                 </View>
@@ -131,11 +137,12 @@ class Login extends React.Component {
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
+/**
+ const mapDispatchToProps = (dispatch) => {
 	return{
         userinfo : (user) => dispatch(userinfo(user));
     };
-};
+};*/
 
 const mapStateToProps = state => {
     return {
