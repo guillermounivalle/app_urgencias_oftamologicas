@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack'
+import {createStackNavigator, TransitionPreset,CardStyleInterpolators} from '@react-navigation/stack'
 import Register from './screens/Register';
 import Login from './screens/Login';
 import Home from './screens/Home';
@@ -13,6 +13,7 @@ import SwiperImage from './components/swiperimage';
 
 //Redux  (flux architecture)
 import { Provider } from 'react-redux';
+import { Easing } from 'react-native-reanimated';
 const store = ConfigureStore();
 const Stack = createStackNavigator();
 
@@ -32,13 +33,16 @@ class App extends React.Component{
 		return(
 			<Provider store = {store}>
 				<NavigationContainer>
-					<Stack.Navigator>
+					<Stack.Navigator
+					>
 						<Stack.Screen  
-							name="Register" 
-							component={Register}/>
-						<Stack.Screen  
+						  options={{title: "log in"}} 
 							name="Login" 
-							component={Login}/>	
+							component={Login}/>
+						<Stack.Screen 
+							options={{title: "Registro"}} 
+							name="Register" 
+							component={Register}/>		
 						<Stack.Screen  
 							name="Home" 
 							component={Home}/>
@@ -49,6 +53,7 @@ class App extends React.Component{
 		};	
 	};
 	
+
 	const styles = StyleSheet.create({
 		container: {
 			flex: 1,

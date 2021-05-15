@@ -96,8 +96,8 @@ class Register extends React.Component{
 		}
 		else{
 			this.verifyuserExist();
-		}
-	}
+		};
+	};
 	
 	verifyuserExist = async () => {
 		const iD = this.state.id;
@@ -203,17 +203,13 @@ class Register extends React.Component{
 						transparent={true}
 						animationType='fade'
 						visible={this.state.isModalVisible}
-						onRequestClose={()=> this.changeModalVisible(false)}
-					>
+						onRequestClose={()=> this.changeModalVisible(false)}>
 						<View style={styles.centeredViewModal}>
-							
 						<ModalPicker
 							changeModalVisible={this.changeModalVisible}
 							setData={this.setData}>
 						</ModalPicker>
-					
 						</View>
-						
 					</Modal> 
 				</View>
 				<TouchableHighlight onPress={() => this.verifyTextInputIsEmpty()}>
@@ -254,7 +250,7 @@ const styles = StyleSheet.create({
 	},
 	textInput: {
 		 fontSize: 18,
-		 color: '#2E2E2E'
+		 color: '#585858'
 	},
 	buttonRegister: {
 		borderWidth: 3,
