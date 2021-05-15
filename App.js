@@ -36,6 +36,9 @@ class App extends React.Component{
 					<Stack.Navigator
 					>
 						<Stack.Screen  
+							name="Home" 
+							component={Home}/>
+						<Stack.Screen  
 						  options={{title: "log in"}} 
 							name="Login" 
 							component={Login}/>
@@ -43,9 +46,7 @@ class App extends React.Component{
 							options={{title: "Registro"}} 
 							name="Register" 
 							component={Register}/>		
-						<Stack.Screen  
-							name="Home" 
-							component={Home}/>
+						
 					</Stack.Navigator>
 				</NavigationContainer>
 			</Provider>
