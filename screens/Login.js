@@ -113,10 +113,7 @@ class Login extends React.Component {
             else{
                 auth.signInWithEmailAndPassword( this.state.email,  this.state.password)
                 .then((userCredential) => {
-            
                 var user = userCredential.user;
-                console.log('Login User auth ====> '+ JSON.stringify(user));
-
                 })
                 .catch((error) => {
                 var errorCode = error.code;

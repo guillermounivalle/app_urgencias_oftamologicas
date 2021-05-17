@@ -247,7 +247,8 @@ class Register extends React.Component{
 						<View style={styles.centeredViewModal}>
 						<ModalPicker
 							changeModalVisible={this.changeModalVisible}
-							setData={this.setData}>
+							setData={this.setData}
+							modalModuleCall="register">
 						</ModalPicker>
 						</View>
 					</Modal> 
