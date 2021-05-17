@@ -7,6 +7,7 @@ import * as actions from '../redux_folder/actions/actionsCreators';
 import {connect} from 'react-redux';
 import {userinfo} from '../redux_folder/actions/actionsCreators';
 import SwiperImage from '../components/swiperimage';
+import { auth }from '../controllers/firebase';
 
 
 
@@ -106,10 +107,21 @@ class Login extends React.Component {
             const user = firebase.db.collection('medicalstaff');
             const snapshot = await user.where('email', '==', this.state.email).where('password', '==', this.state.password).get();
             if (snapshot.empty) {
-                alert("El usuario o contraseña no está registrador")
+                alert("El usuario o contraseña no está registrado")
                 return;
             }
             else{
+                auth.signInWithEmailAndPassword( this.state.email,  this.state.password)
+                .then((userCredential) => {
+            
+                var user = userCredential.user;
+                console.log('Login User auth ====> '+ JSON.stringify(user));
+
+                })
+                .catch((error) => {
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                });
                 snapshot.forEach(doc => {
                     this.setState({
                         id:doc.id,
@@ -147,7 +159,7 @@ class Login extends React.Component {
                     />
                 </View>
                 <TouchableHighlight onPress={() => this.verifyTextInputIsEmpty()}>
-					<View style={styles.buttonRegister}>
+					<View style={styles.buttonLogin}>
 						<Text style={styles.textButtonRegister}>
 							LOGIN
 						</Text>
@@ -185,14 +197,14 @@ const screen = Dimensions.get('screen');
 const styles = StyleSheet.create({
 	inputGroup: {
 		padding: 0,
-		height: screen.height * 0.05,
-		marginBottom: screen.height * 0.025,
-		borderWidth: 3,
+		height: screen.height * 0.07,
+		marginBottom: screen.height * 0.035,
+		borderWidth: 2,
 		borderColor: '#BDBDBD',
-		borderRadius:10,
-		backgroundColor: '#EFF2FB',
+		borderRadius:5,
 		opacity: 0.8, 
-		justifyContent: 'center'
+		justifyContent: 'center',
+		fontFamily: 'Open Sans'
 	},
 	container: {
 		flex: 1,
@@ -220,13 +232,14 @@ const styles = StyleSheet.create({
     color: '#E6E6E6',
     textAlign: 'center',
    },
-   buttonRegister: {
-     borderWidth: 3,
-     borderColor: '#BDBDBD',
-     borderRadius:10,
-     height: screen.height * 0.06,
-     backgroundColor: '#5882FA',
-     justifyContent: 'center'
+   buttonLogin: {
+    borderWidth: 3,
+    borderColor: '#BDBDBD',
+    borderRadius:5,
+    height: screen.height * 0.07,
+    backgroundColor: '#5882FA',
+    justifyContent: 'center',
+    marginBottom: 10
    },
    textButtonRegister:{
     fontSize: 20,

@@ -11,10 +11,12 @@ import { LogBox } from 'react-native';
 import {ConfigureStore}  from './redux_folder/store';
 import SwiperImage from './components/swiperimage';
 
+import { auth }from './controllers/firebase'
+
 //Redux  (flux architecture)
 import { Provider } from 'react-redux';
-import { Easing } from 'react-native-reanimated';
 const store = ConfigureStore();
+
 const Stack = createStackNavigator();
 
 
@@ -29,12 +31,17 @@ class App extends React.Component{
 	}
 	
 	UNSAFE_componentWillMount(){
-		if(this.state.session === true){
-			this.setState({session: false});
-		}
-		else{
-			this.setState({session: true});
-		}
+		auth.onAuthStateChanged((user)=>{
+			if(user){
+				//this.setState({session: true});
+				console.log('Usuario logueado');
+				console.log('user ====> ' + JSON.stringify(user));
+			}
+			else{
+				//this.setState({session: false});
+				console.log('Usuario no logueado');
+			}
+		})
 	} 
 
 	moduleInit = () =>{
@@ -46,14 +53,15 @@ class App extends React.Component{
 						<Stack.Screen  
 							name="Home" 
 							component={Home}/>
+						<Stack.Screen 
+							options={{title: "Registro"}} 
+							name="Register" 
+							component={Register}/>	
 						<Stack.Screen  
 						  options={{title: "log in"}} 
 							name="Login" 
 							component={Login}/>	
-						<Stack.Screen 
-							options={{title: "Registro"}} 
-							name="Register" 
-							component={Register}/>		
+								
 					</Stack.Navigator>
 				</NavigationContainer>
 			</Provider>
@@ -63,14 +71,14 @@ class App extends React.Component{
 				<Provider store = {store}>
 				<NavigationContainer>
 					<Stack.Navigator>
+					<Stack.Screen 
+							options={{title: "Registro"}} 
+							name="Register" 
+							component={Register}/>
 						<Stack.Screen  
 						  options={{title: "log in"}} 
 							name="Login" 
 							component={Login}/>	
-						<Stack.Screen 
-							options={{title: "Registro"}} 
-							name="Register" 
-							component={Register}/>
 						<Stack.Screen  
 							name="Home" 
 							component={Home}/>		

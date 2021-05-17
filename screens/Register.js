@@ -1,10 +1,14 @@
 import React from 'react'
 import {createStackNavigator} from '@react-navigation/stack';
-import {View, Text, TouchableOpacity, ScrollView, StyleSheet, TextInput, Dimensions, Modal, TouchableHighlight} from 'react-native';
+import {View, Text, TouchableOpacity, ScrollView, TextInput, StyleSheet, Dimensions, Modal, TouchableHighlight} from 'react-native';
 import firebase from '../controllers/firebase';
 import regexEvaluator from '../shared/regex';
 import SwiperImage from '../components/swiperimage';
-import {ModalPicker} from '../components/modalPicker'
+import {ModalPicker} from '../components/modalPicker';
+import { auth }from '../controllers/firebase';
+
+
+
 
 class Register extends React.Component{
 	constructor(props){
@@ -15,6 +19,7 @@ class Register extends React.Component{
 			lastname:"",
 			email:"",
 			password:"",
+			validatepassword:"",
 			speciality:"Especialidad",
 			colorTextSpeciality: '#A4A4A4',
 			active: false,
@@ -32,6 +37,7 @@ class Register extends React.Component{
 		this.navigateToLogin = this.navigateToLogin.bind(this);
 		this.changeModalVisible = this.changeModalVisible.bind(this);
 		this.setData = this.setData.bind(this);
+		this.isEqualPassword = this.isEqualPassword.bind(this);
 	};
 		
 	handleChangeText = (name, value) => {
@@ -45,6 +51,7 @@ class Register extends React.Component{
 			lastname:"",
 			email:"",
 			password:"",
+			validatepassword: "",
 			speciality:"Especialidad",
 			colorTextSpeciality:'#A4A4A4',
 			isModalVisible: false
@@ -57,6 +64,16 @@ class Register extends React.Component{
 		return lowercaseemail;
 	}
 	
+	isEqualPassword = () => {
+		if(this.state.password === this.state.validatepassword){
+			return true;
+		}
+		else{
+			alert('Las contraseñas no son iguales');
+			return false;
+		}
+	}
+
 	navigateToLogin = () => {
 		this.props.navigation.navigate('Login');
 	}
@@ -92,6 +109,9 @@ class Register extends React.Component{
 		}
 		if(this.state.speciality == "Especialidad"){
 			alert('Por favor ingrese una especialidad');
+			return;
+		}
+		if(!this.isEqualPassword()){
 			return;
 		}
 		else{
@@ -133,25 +153,32 @@ class Register extends React.Component{
 				admin: this.state.admin
 			})
 			.then(() => {
-				console.log("Document successfully written!");
-				alert('User have been saved');
-				this.resetInput();
-				this.props.navigation.navigate('Home');
+				auth.createUserWithEmailAndPassword(this.state.email, this.state.password)
+				.then(()=> {
+					console.log("Document successfully written!");
+					alert('User have been saved');
+					this.resetInput();
+					this.props.navigation.navigate('Home');
+				})
+				.catch((error) => { 
+				var errorCode = error.code;
+				var errorMessage = error.message;
+				console.log('ErrorCode ==> '+ errorCode + " ErrorMessage ===> " + errorMessage );
+				});
 			})
-			.catch((error) => { 
+			.catch((error)=> {
 				console.error("Error writing document: ", error);
 				alert('User have not been saved');
 			});
+			
 		};
 	};
 	
-	
-
 	render(){
-		
 		return (
-			<ScrollView style={styles.container}>
-				<SwiperImage />				
+			<View style={styles.container}>
+				<SwiperImage />
+				<ScrollView style={{flex:1}}>
 				<View style={styles.inputGroup}>
 					<TextInput
 						style={styles.textInput}
@@ -190,8 +217,21 @@ class Register extends React.Component{
 						style={styles.textInput}
 						placeholder="Contraseña"
 						placeholderTextColor = "#A4A4A4"
+						secureTextEntry={true} 
+						inlineImageLeft="username"
+						inlineImagePadding={2}
+						underlineColorAndroid="transparent"
+						iconPosition="right"
 						onChangeText={value => this.handleChangeText("password", value)}
 						value={this.state.password}	/>
+				</View>
+				<View style={styles.inputGroup}>
+					<TextInput 
+						style={styles.textInput}
+						placeholder="Confirmar Contraseña"
+						placeholderTextColor = "#A4A4A4"
+						onChangeText={value => this.handleChangeText("validatepassword", value)}
+						value={this.state.validatepassword}	/>
 				</View>
 				<View style={styles.inputGroup}>
 					<TouchableOpacity
@@ -215,7 +255,7 @@ class Register extends React.Component{
 				<TouchableHighlight onPress={() => this.verifyTextInputIsEmpty()}>
 						<View style={styles.buttonRegister}>
 							<Text style={styles.textButtonRegister}>
-								Registrarse
+								REGISTRAR CUENTA
 							</Text>
 						</View>
 				</TouchableHighlight>
@@ -230,6 +270,7 @@ class Register extends React.Component{
 					</Text>
 				</View>
 			</ScrollView>
+			</View>
 			);
 		}
 	};
@@ -239,26 +280,27 @@ const screen = Dimensions.get('screen');
 const styles = StyleSheet.create({
 	inputGroup: {
 		padding: 0,
-		height: screen.height * 0.05,
-		marginBottom: screen.height * 0.025,
-		borderWidth: 3,
+		height: screen.height * 0.07,
+		marginBottom: screen.height * 0.035,
+		borderWidth: 2,
 		borderColor: '#BDBDBD',
-		borderRadius:10,
-		backgroundColor: '#EFF2FB',
+		borderRadius:5,
 		opacity: 0.8, 
-		justifyContent: 'center'
+		justifyContent: 'center',
+		fontFamily: 'Open Sans'
 	},
 	textInput: {
-		 fontSize: 18,
-		 color: '#585858'
+		 fontSize: 20,
+		 color: '#424242'
 	},
 	buttonRegister: {
 		borderWidth: 3,
 		borderColor: '#BDBDBD',
-		borderRadius:10,
-		height: screen.height * 0.06,
+		borderRadius:5,
+		height: screen.height * 0.07,
 		backgroundColor: '#5882FA',
-		justifyContent: 'center'
+		justifyContent: 'center',
+		marginBottom: 10
 	},
 	textButtonRegister:{
 		fontSize: 20,

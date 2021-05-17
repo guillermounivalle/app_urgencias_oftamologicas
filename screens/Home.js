@@ -1,6 +1,7 @@
 import React from 'react'
-import { View, Text, Dimensions, StyleSheet, ScrollView, TouchableHighlight, Image} from 'react-native';
+import { View, Text, Dimensions, ScrollView, StyleSheet, TouchableHighlight, Image} from 'react-native';
 import SwiperImage from '../components/swiperimage';
+import { auth }from '../controllers/firebase';
 
 
 
@@ -14,6 +15,7 @@ class Home extends React.Component {
 
         this.adminOptions = this.adminOptions.bind(this);
         this.isClickedModuleOptions = this.isClickedModuleOptions.bind(this);
+        this.isClickedModuleclose = this.isClickedModuleclose.bind(this);
     };
 
     isClickedModuleOptions = (module) => {
@@ -21,6 +23,16 @@ class Home extends React.Component {
     };
 
 
+    //Provisional method. Do not forget change
+    isClickedModuleclose = () => {
+        auth.signOut()
+        .then(() => {
+            this.props.navigation.navigate('Login');
+          })
+          .catch((error) => {
+            console.log('Error Home Close session ===> ' + error);
+          });
+        }   
     adminOptions = () => {
         if(this.state.isAdmin){
             return (
@@ -115,6 +127,19 @@ class Home extends React.Component {
                         <TouchableHighlight 
                             style={styles.touchableLeft} 
                             onPress={() => this.isClickedModuleOptions('Cirugia')}
+                            underlayColor="white">
+                            <View style={{alignItems:'center'}}>
+                                <Image 
+                                    style={styles.iconStyle} 
+                                    source={require('../assets/Cirugia.png')}/>
+                                <Text style={styles.textOptionsModules}>Cirugía</Text> 
+                            </View>
+                        </TouchableHighlight>
+                    </View>
+                    <View style={styles.viewRow}>
+                        <TouchableHighlight 
+                            style={styles.touchableLeft} 
+                            onPress={() => this.isClickedModuleclose()}
                             underlayColor="white">
                             <View style={{alignItems:'center'}}>
                                 <Image 
