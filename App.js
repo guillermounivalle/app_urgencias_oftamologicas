@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator, TransitionPreset,CardStyleInterpolators} from '@react-navigation/stack'
+import {createStackNavigator} from '@react-navigation/stack'
 import Register from './screens/Register';
 import Login from './screens/Login';
 import Home from './screens/Home';
@@ -21,35 +21,70 @@ const Stack = createStackNavigator();
 class App extends React.Component{
 	constructor(props){
 		super(props);
+		this.state={
+			session: true
+		};
+
+		this.moduleInit = this.moduleInit.bind(this);
 	}
 	
-	componentDidMount(){
-		
+	UNSAFE_componentWillMount(){
+		if(this.state.session === true){
+			this.setState({session: false});
+		}
+		else{
+			this.setState({session: true});
+		}
 	} 
-	
-	render(){
-		LogBox.ignoreLogs(['Setting a timer for a long period of time'])
-;
-		return(
-			<Provider store = {store}>
+
+	moduleInit = () =>{
+		if(this.state.session){
+			return(
+				<Provider store = {store}>
 				<NavigationContainer>
-					<Stack.Navigator
-					>
+					<Stack.Navigator>
 						<Stack.Screen  
 							name="Home" 
 							component={Home}/>
 						<Stack.Screen  
 						  options={{title: "log in"}} 
 							name="Login" 
-							component={Login}/>
+							component={Login}/>	
 						<Stack.Screen 
 							options={{title: "Registro"}} 
 							name="Register" 
 							component={Register}/>		
-						
 					</Stack.Navigator>
 				</NavigationContainer>
 			</Provider>
+			);
+		}else{
+			return(
+				<Provider store = {store}>
+				<NavigationContainer>
+					<Stack.Navigator>
+						<Stack.Screen  
+						  options={{title: "log in"}} 
+							name="Login" 
+							component={Login}/>	
+						<Stack.Screen 
+							options={{title: "Registro"}} 
+							name="Register" 
+							component={Register}/>
+						<Stack.Screen  
+							name="Home" 
+							component={Home}/>		
+					</Stack.Navigator>
+				</NavigationContainer>
+			</Provider>
+			)
+		}
+	}
+	
+	render(){
+		LogBox.ignoreLogs(['Setting a timer for a long period of time']);
+		return(
+				this.moduleInit()
 			);
 		};	
 	};

@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Text, Dimensions, StyleSheet, ScrollView, TouchableHighlight, Image} from 'react-native';
-
+import SwiperImage from '../components/swiperimage';
 
 
 
@@ -9,10 +9,15 @@ class Home extends React.Component {
         super(props);
 
         this.state = { 
-            isAdmin: true
+            isAdmin: false
         }
 
         this.adminOptions = this.adminOptions.bind(this);
+        this.isClickedModuleOptions = this.isClickedModuleOptions.bind(this);
+    };
+
+    isClickedModuleOptions = (module) => {
+        console.log('Haz clieckeado el módulo ' + module);
     };
 
 
@@ -20,20 +25,26 @@ class Home extends React.Component {
         if(this.state.isAdmin){
             return (
                 <View style={styles.viewRow}>
-                    <TouchableHighlight style={styles.touchableLeft}>
-                        <View>
+                    <TouchableHighlight 
+                        style={styles.touchableLeft} 
+                        onPress={() => this.isClickedModuleOptions('Gestion')}
+                        underlayColor="white">
+                        <View style={{alignItems:'center'}}>
                             <Image 
                                 style={styles.iconStyle} 
-                                source={require('../assets/Evaluacion.png')}/>
-                            <Text>Mòdulo a usar</Text> 
+                                source={require('../assets/Gestion_usuarios.png')}/>
+                            <Text style={styles.textOptionsModules}>Gestion de usuarios</Text> 
                         </View>
                     </TouchableHighlight>
-                    <TouchableHighlight style={styles.touchableRight}>
-                        <View>
+                    <TouchableHighlight 
+                        style={styles.touchableRight} 
+                        onPress={() => this.isClickedModuleOptions('Reportes')}
+                        underlayColor="white">
+                        <View style={{alignItems:'center'}}>
                             <Image 
                                 style={styles.iconStyle} 
-                                source={require('../assets/Evaluacion.png')}/>
-                            <Text>Mòdulo a usar</Text> 
+                                source={require('../assets/Reportes.png')}/>
+                            <Text style={styles.textOptionsModules}>Generar Reportes</Text> 
                         </View>
                     </TouchableHighlight>
                 </View>
@@ -46,65 +57,73 @@ class Home extends React.Component {
     render(){
         return(
             <View style={styles.container}>
-                <View>
-                    <Text>Home.js</Text>
+                <SwiperImage />	
+                <View styles={{marginBottom: 20}}>
+                    <Text style={styles.textSelectModule}>Selecciona un módulo</Text>
                 </View>
                 <ScrollView style={styles.scrollView}>
-                    <View style={styles.viewRow}>
-                        <TouchableHighlight style={styles.touchableLeft}>
-                            <View>
-                                <Image 
-                                    style={styles.iconStyle} 
-                                    source={require('../assets/Evaluacion.png')}/>
-                                <Text>Mòdulo a usar</Text> 
-                            </View>
-                        </TouchableHighlight>
-                        <TouchableHighlight style={styles.touchableRight}>
-                            <View>
-                                <Image 
-                                    style={styles.iconStyle} 
-                                    source={require('../assets/Evaluacion.png')}/>
-                                <Text>Mòdulo a usar</Text> 
-                            </View>
-                        </TouchableHighlight>
-                    </View>
-                    <View style={styles.viewRow}>
-                        <TouchableHighlight style={styles.touchableLeft}>
-                            <View>
-                                <Image 
-                                    style={styles.iconStyle} 
-                                    source={require('../assets/Evaluacion.png')}/>
-                                <Text>Mòdulo a usar</Text> 
-                            </View>
-                        </TouchableHighlight>
-                        <TouchableHighlight style={styles.touchableRight}>
-                            <View>
-                                <Image 
-                                    style={styles.iconStyle} 
-                                    source={require('../assets/Evaluacion.png')}/>
-                                <Text>Mòdulo a usar</Text> 
-                            </View>
-                        </TouchableHighlight>
-                    </View>
-                    <View style={styles.viewRow}>
-                        <TouchableHighlight style={styles.touchableLeft}>
-                            <View>
-                                <Image 
-                                    style={styles.iconStyle} 
-                                    source={require('../assets/Evaluacion.png')}/>
-                                <Text>Mòdulo a usar</Text> 
-                            </View>
-                        </TouchableHighlight>
-                        <TouchableHighlight style={styles.touchableRight}>
-                            <View>
-                                <Image 
-                                    style={styles.iconStyle} 
-                                    source={require('../assets/Evaluacion.png')}/>
-                                <Text>Mòdulo a usar</Text> 
-                            </View>
-                        </TouchableHighlight>
-                    </View>
                     {this.adminOptions()}
+                    <View style={styles.viewRow}>
+                        <TouchableHighlight 
+                            style={styles.touchableLeft} 
+                            onPress={() => this.isClickedModuleOptions('Datospaciente')}
+                            underlayColor="white">
+                            <View style={{alignItems:'center'}}>
+                                <Image 
+                                    style={styles.iconStyle} 
+                                    source={require('../assets/Datos.png')}/>
+                                <Text style={styles.textOptionsModules}>Datos del Paciente</Text> 
+                            </View>
+                        </TouchableHighlight>
+                        <TouchableHighlight 
+                            style={styles.touchableRight} 
+                            onPress={() => this.isClickedModuleOptions('Evaluacion')}
+                            underlayColor="white">
+                            <View style={{alignItems:'center'}}>
+                                <Image 
+                                    style={styles.iconStyle} 
+                                    source={require('../assets/Evaluacion.png')}/>
+                                <Text style={styles.textOptionsModules}>Evaluación</Text> 
+                            </View>
+                        </TouchableHighlight>
+                    </View>
+                    <View style={styles.viewRow}>
+                        <TouchableHighlight 
+                            style={styles.touchableLeft} 
+                            onPress={() => this.isClickedModuleOptions('Control')}
+                            underlayColor="white">
+                            <View style={{alignItems:'center'}}>
+                                <Image 
+                                    style={styles.iconStyle} 
+                                    source={require('../assets/Control_Ambulatorio.png')}/>
+                                <Text style={styles.textOptionsModules}>Control Ambulatorio</Text> 
+                            </View>
+                        </TouchableHighlight>
+                        <TouchableHighlight 
+                            style={styles.touchableRight} 
+                            onPress={() => this.isClickedModuleOptions('Hospitalización')}
+                            underlayColor="white">
+                            <View style={{alignItems:'center'}}>
+                                <Image 
+                                    style={styles.iconStyle} 
+                                    source={require('../assets/Hospitalizacion.png')}/>
+                                <Text style={styles.textOptionsModules}>Hospitalización</Text> 
+                            </View>
+                        </TouchableHighlight>
+                    </View>
+                    <View style={styles.viewRow}>
+                        <TouchableHighlight 
+                            style={styles.touchableLeft} 
+                            onPress={() => this.isClickedModuleOptions('Cirugia')}
+                            underlayColor="white">
+                            <View style={{alignItems:'center'}}>
+                                <Image 
+                                    style={styles.iconStyle} 
+                                    source={require('../assets/Cirugia.png')}/>
+                                <Text style={styles.textOptionsModules}>Cirugía</Text> 
+                            </View>
+                        </TouchableHighlight>
+                    </View>
                 </ScrollView>
 			    
 		    </View>
@@ -149,10 +168,19 @@ const styles = StyleSheet.create({
     },  
     iconStyle:{
         height: sizeButtonModule * 0.58,
-        width:sizeButtonModule * 0.58,
-        marginTop: sizeButtonModule * 0.12
-
-    }
+        width: sizeButtonModule * 0.58,
+        marginTop: sizeButtonModule * 0.12,
+    },
+    textSelectModule: {
+        fontSize: 18,
+        color: '#585858',
+        marginBottom: 20
+   },
+   textOptionsModules:{
+    fontSize: 16,
+    color: '#585858',
+    marginTop: 10
+   }
 });
 
 
