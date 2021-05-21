@@ -58,7 +58,8 @@ class App extends React.Component{
 					<Stack.Navigator
 					initialRouteName={routeInital}
 					screenOptions= {{
-				  		headerTitle: ()=> <Header/>
+				  		headerTitle: ()=> <Header/>,
+							headerLeft: null
 					}}>
 						<Stack.Screen  
 					  		options={{title: "log in"}} 

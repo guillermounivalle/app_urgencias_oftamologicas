@@ -6,6 +6,8 @@ import regexEvaluator from '../shared/regex';
 import SwiperImage from '../components/swiperimage';
 import {ModalPicker} from '../components/modalPicker';
 import { auth }from '../controllers/firebase';
+import { Ionicons } from '@expo/vector-icons'; 
+
 
 
 
@@ -24,7 +26,9 @@ class Register extends React.Component{
 			colorTextSpeciality: '#A4A4A4',
 			active: false,
 			admin: false,
-			isModalVisible: false
+			isModalVisible: false,
+			iconShowOrHidePassword:"eye-outline",
+            showPassword:true
 		};
 		
 
@@ -38,6 +42,8 @@ class Register extends React.Component{
 		this.changeModalVisible = this.changeModalVisible.bind(this);
 		this.setData = this.setData.bind(this);
 		this.isEqualPassword = this.isEqualPassword.bind(this);
+		this.showOrHidePassword = this.showOrHidePassword.bind(this);
+    this.iconShowOrHidePassword = this.iconShowOrHidePassword.bind(this);
 	};
 		
 	handleChangeText = (name, value) => {
@@ -85,6 +91,33 @@ class Register extends React.Component{
 	setData = (option) => {
 		this.setState({speciality: option, colorTextSpeciality:'#2E2E2E'});
 	};
+
+	showOrHidePassword = () => {
+        if(this.state.showPassword)
+            this.setState({showPassword: !this.state.showPassword});
+            
+            this.setState({showPassword: !this.state.showPassword});
+    };
+
+    iconShowOrHidePassword = () => {
+        if(this.state.showPassword){
+            return(
+                <Ionicons 
+                        name="eye-outline"
+                        size={24} 
+                        color="black"
+                        onPress={() => this.showOrHidePassword()} />
+            );
+        }else{
+            return(
+                <Ionicons 
+                        name="eye-off-outline"
+                        size={24} 
+                        color="black"
+                        onPress={() => this.showOrHidePassword()} />
+            );
+        };
+    };
 
 	verifyTextInputIsEmpty(){
 		if(!this.state.id.trim()){
@@ -212,27 +245,32 @@ class Register extends React.Component{
 						onChangeText={value => this.handleChangeText("email", this.lowerCaseEmail(value))}
 						value={this.state.email}/>
 				</View>
-				<View style={styles.inputGroup}>
-					<TextInput 
-						style={styles.textInput}
+				<View style={[styles.inputGroup, {flexDirection:'row', alignItems:'center'}]}>
+                    <TextInput 
+                        style={[styles.textInput, {position:'absolute'}]}
 						placeholder="Contraseña"
 						placeholderTextColor = "#A4A4A4"
-						secureTextEntry={true} 
-						inlineImageLeft="username"
-						inlineImagePadding={2}
-						underlineColorAndroid="transparent"
-						iconPosition="right"
-						onChangeText={value => this.handleChangeText("password", value)}
-						value={this.state.password}	/>
-				</View>
-				<View style={styles.inputGroup}>
-					<TextInput 
-						style={styles.textInput}
+                        secureTextEntry={this.state.showPassword}
+                        onChangeText={value => this.handleChangeText("password", value)}
+                        value={this.state.password}
+                    />
+                    <View style={styles.iconShoworhidePassword}>
+                        {this.iconShowOrHidePassword()}
+                    </View>
+                </View>
+				<View style={[styles.inputGroup, {flexDirection:'row', alignItems:'center'}]}>
+                    <TextInput 
+                        style={[styles.textInput, {position:'absolute'}]}
 						placeholder="Confirmar Contraseña"
 						placeholderTextColor = "#A4A4A4"
-						onChangeText={value => this.handleChangeText("validatepassword", value)}
-						value={this.state.validatepassword}	/>
-				</View>
+                        secureTextEntry={this.state.showPassword}
+                        onChangeText={value => this.handleChangeText("validatepassword", value)}
+                        value={this.state.validatepassword}
+                    />
+                    <View style={styles.iconShoworhidePassword}>
+                        {this.iconShowOrHidePassword()}
+                    </View>
+                </View>
 				<View style={styles.inputGroup}>
 					<TouchableOpacity
 						onPress={()=> this.changeModalVisible(true)}>
@@ -292,7 +330,8 @@ const styles = StyleSheet.create({
 	},
 	textInput: {
 		 fontSize: 20,
-		 color: '#424242'
+		 color: '#424242',
+		 left: 15
 	},
 	buttonRegister: {
 		borderWidth: 3,
@@ -347,7 +386,11 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		borderColor: '#BDBDBD',
 		borderWidth: 3,
-	}
+	},
+	iconShoworhidePassword:{
+        position: 'absolute',
+		right: 25
+    }
 });	
 	
 export default Register;

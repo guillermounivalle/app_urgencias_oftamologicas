@@ -1,6 +1,6 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
-import { View, Text, TouchableHighlight, StyleSheet, TextInput, Dimensions} from 'react-native';
+import { View, Text, TouchableHighlight, StyleSheet, TextInput, Dimensions, TouchableOpacity, TouchableOpacityBase} from 'react-native';
 import firebase from '../controllers/firebase';
 import regexEvaluator from '../shared/regex';
 import * as actions from '../redux_folder/actions/actionsCreators';
@@ -8,6 +8,7 @@ import {connect} from 'react-redux';
 import {userinfo} from '../redux_folder/actions/actionsCreators';
 import SwiperImage from '../components/swiperimage';
 import { auth }from '../controllers/firebase';
+import { Ionicons } from '@expo/vector-icons'; 
 
 
 
@@ -19,9 +20,11 @@ class Login extends React.Component {
             id: "",
 			name:"",
 			lastname:"",
-			email:"",
-			password:"",
+			email:"guilo@gmail.com",
+			password:"9876543",
             speciality:"",
+            iconShowOrHidePassword:"eye-outline",
+            showPassword:true
         };
 
         this.handleChangeText = this.handleChangeText.bind(this);
@@ -32,7 +35,8 @@ class Login extends React.Component {
         this.lowerCaseEmail = this.lowerCaseEmail.bind(this);
         this.navigateToRegister = this.navigateToRegister.bind(this);
         this.verifyTextInputIsEmpty = this.verifyTextInputIsEmpty.bind(this);
-
+        this.showOrHidePassword = this.showOrHidePassword.bind(this);
+        this.iconShowOrHidePassword = this.iconShowOrHidePassword.bind(this);
 
     };
     componentDidMount(){
@@ -59,6 +63,33 @@ class Login extends React.Component {
 
     navigateToRegister(){
         this.props.navigation.navigate('Register');
+    };
+
+    showOrHidePassword = () => {
+        if(this.state.showPassword)
+            this.setState({showPassword: !this.state.showPassword});
+
+            this.setState({showPassword: !this.state.showPassword});
+    };
+
+    iconShowOrHidePassword = () => {
+        if(this.state.showPassword){
+            return(
+                <Ionicons 
+                        name="eye-outline"
+                        size={24} 
+                        color="black"
+                        onPress={() => this.showOrHidePassword()} />
+            );
+        }else{
+            return(
+                <Ionicons 
+                        name="eye-off-outline"
+                        size={24} 
+                        color="black"
+                        onPress={() => this.showOrHidePassword()} />
+            );
+        };
     };
 
     verifyTextInputIsEmpty(){
@@ -147,21 +178,25 @@ class Login extends React.Component {
                         value={this.state.email}
                     />
                 </View>
-                <View style={styles.inputGroup}>
+                <View style={[styles.inputGroup, {flexDirection:'row', alignItems:'center'}]}>
                     <TextInput 
-                        style={styles.textInput}
-                        placeholder="Password"
+                        style={[styles.textInput, {position:'absolute'}]}
+                        placeholder="Contraseña"
+                        secureTextEntry={this.state.showPassword}
                         onChangeText={value => this.handleChangeText("password", value)}
                         value={this.state.password}
                     />
+                    <View style={styles.iconShoworhidePassword}>
+                        {this.iconShowOrHidePassword()}
+                    </View>
                 </View>
-                <TouchableHighlight onPress={() => this.verifyTextInputIsEmpty()}>
+                <TouchableOpacity onPress={() => this.verifyTextInputIsEmpty()}>
 					<View style={styles.buttonLogin}>
 						<Text style={styles.textButtonRegister}>
 							LOGIN
 						</Text>
 					</View>
-				</TouchableHighlight>
+				</TouchableOpacity>
                 <View style={styles.containerTextGoToRegister}>
 					<Text style={[styles.textInput, {color: '#585858'}]}>
 						No tienes una cuenta?
@@ -222,7 +257,8 @@ const styles = StyleSheet.create({
     },
     textInput: {
         fontSize: 18,
-        color: '#585858'
+        color: '#585858',
+        left: 15
    },
    buttonLogin:{
     fontSize: 20,
@@ -242,7 +278,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#E6E6E6',
     textAlign: 'center',
-},
+    },
+    iconShoworhidePassword:{
+        position: 'absolute',
+		right: 25
+    }
 });	
 
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity, Dimensions,ScrollView, TouchableHighlight} from 'react-native';
-import {SimpleLineIcons , FontAwesome, MaterialIcons  } from '@expo/vector-icons';
+import {SimpleLineIcons , FontAwesome, Ionicons  } from '@expo/vector-icons';
 
 
 const OPTIONS_REGISTER = ['Ninguna', 'Especialidad 1', 'Especialidad 2', 'Especialidad 3', 'Especialidad 4', 'Especialidad 5']
@@ -58,9 +58,7 @@ const ModalPicker = (props) => {
 							name="user-circle-o"
 							size={30}
 							style={styles.iconMenu}/> 
-						<Text style={styles.headertext}>
-							Mi perfíl
-						</Text>
+						<Text style={styles.headertext}> Mi perfíl </Text>
 					</View>		
 				</TouchableOpacity >
 				<TouchableOpacity  
@@ -72,16 +70,27 @@ const ModalPicker = (props) => {
 							name="logout"
 							size={30}
 							style={styles.iconMenu}/> 
-						<Text style={styles.headertext}>
-							Logout
-						</Text>
+						<Text style={styles.headertext}> Logout </Text>
+					</View>		
+				</TouchableOpacity >
+				<TouchableOpacity  
+					style={styles.modalUserOption}
+					onPress={()=> {props.changeModalVisible(false);}}>
+					<View 
+						style={styles.header}>
+						<Ionicons
+							name="ios-close-circle-outline"
+							size={40}
+							style={styles.iconMenu}/> 
+						<Text style={styles.headertext}> Cerrar </Text>
 					</View>		
 				</TouchableOpacity >	
 			</View>
 			
 		);
 	};
-}	
+};
+	
 	
 const styles = StyleSheet.create({
 	container: {

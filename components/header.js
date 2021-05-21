@@ -27,7 +27,7 @@ class Header extends React.Component {
 	};
 
 	userOption = () => {
-		this.changeModalVisible(true)
+		this.changeModalVisible(!this.state.isModalVisible)
 		console.log('on press User option');
 	};
 
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
 	},
 	centeredViewModal: {
 		width:screen.width /2, 
-		height: 150,
+		height: 190,
 		borderRadius: 10,
 		borderColor: '#BDBDBD',
 		borderWidth: 2,
