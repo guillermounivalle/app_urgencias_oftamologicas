@@ -1,10 +1,14 @@
 import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity, Dimensions,ScrollView, TouchableHighlight} from 'react-native';
-import {SimpleLineIcons , FontAwesome, Ionicons  } from '@expo/vector-icons';
+import {SimpleLineIcons , FontAwesome, Ionicons, Fontisto  } from '@expo/vector-icons';
+
 
 
 const OPTIONS_REGISTER = ['Ninguna', 'Especialidad 1', 'Especialidad 2', 'Especialidad 3', 'Especialidad 4', 'Especialidad 5']
 const OPTIONS_USER = ['profile', 'logout'];
+const OPTIONS_MENU = ["Evaluation", 'HomeControl', 'Hospitalization', 'PatientData', ];
+const OPTIONS_MENU_APP = ['Evaluación', 'Control Ambulatorio', 'Hospitalización', 'Datos del Paciente', ];
+const OPTIONS_NAME_ICON = ['doctor','nursing-home', 'bed-patient', 'file-1' ];
 const ICON_OPTIONS_USER = ["user-circle-o", "logout"];
 const WIDTH = Dimensions.get('window').width;
 const HEIGHT = Dimensions.get('window').height;
@@ -51,42 +55,87 @@ const ModalPicker = (props) => {
 			<View>
 				<TouchableOpacity  
 					style={styles.modalUserOption}
-					onPress={()=> {props.changeModalVisible(false)} }>
+					onPress={()=> {props.changeModalVisible('user', false)} }>
 					<View 
 						style={styles.header}>
 						<FontAwesome
 							name="user-circle-o"
 							size={30}
+							color='#5882FA'
 							style={styles.iconMenu}/> 
 						<Text style={styles.headertext}> Mi perfíl </Text>
 					</View>		
 				</TouchableOpacity >
 				<TouchableOpacity  
 					style={styles.modalUserOption}
-					onPress={()=> {props.changeModalVisible(false); props.logoutSession();}}>
+					onPress={()=> {props.changeModalVisible("user", false); props.logoutSession();}}>
 					<View 
 						style={styles.header}>
 						<SimpleLineIcons
 							name="logout"
 							size={30}
+							color='#5882FA'
 							style={styles.iconMenu}/> 
 						<Text style={styles.headertext}> Logout </Text>
 					</View>		
 				</TouchableOpacity >
 				<TouchableOpacity  
 					style={styles.modalUserOption}
-					onPress={()=> {props.changeModalVisible(false);}}>
+					onPress={()=> {props.changeModalVisible("user", false), console.log('===> cerrar')}}>
 					<View 
 						style={styles.header}>
 						<Ionicons
 							name="ios-close-circle-outline"
 							size={40}
+							color='#5882FA'
 							style={styles.iconMenu}/> 
 						<Text style={styles.headertext}> Cerrar </Text>
 					</View>		
 				</TouchableOpacity >	
 			</View>
-			
+		);
+	};
+	if(props.modalModuleCall === "menu"){
+		const onPressOption = (option) => {
+			props.changeModalVisible(false);
+			props.navigationToScreenSelected(option);
+		};
+		const options = OPTIONS_MENU.map((option, index) => {
+			return (
+				<TouchableOpacity  
+					style={styles.modalUserOption}
+					key={index}
+					onPress={()=> {props.changeModalVisible("menu", false); onPressOption(option)}}>
+					<View 
+						style={styles.header}>
+						<Fontisto 
+							name={OPTIONS_NAME_ICON[index]} 
+							size={30} 
+							color='#5882FA'
+							style={styles.iconMenu}/> 
+						<Text style={styles.headertext}> {OPTIONS_MENU_APP[index]} </Text>
+					</View>		
+				</TouchableOpacity >
+			);
+		});
+
+		return(
+			<View>
+				{options}
+				<TouchableOpacity  
+					style={styles.modalUserOption}
+					onPress={()=> {props.changeModalVisible("menu", false), console.log('===> cerrar')}}>
+					<View 
+						style={styles.header}>
+						<Ionicons
+							name="ios-close-circle-outline"
+							size={40}
+							color='#5882FA'
+							style={styles.iconMenu}/> 
+						<Text style={styles.headertext}> Cerrar </Text>
+					</View>		
+				</TouchableOpacity >	
+			</View>
 		);
 	};
 };
@@ -146,7 +195,9 @@ const styles = StyleSheet.create({
 		fontWeight: '300',
 		fontSize: 20,
 		color: "#333",
-		letterSpacing: 1
+		letterSpacing: 1,
+		textAlign: 'center', 
+		marginLeft: 40
 	},
 	iconMenu:{
 		position: 'absolute',

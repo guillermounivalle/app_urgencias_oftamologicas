@@ -10,6 +10,8 @@ import SwiperImage from '../components/swiperimage';
 import { auth }from '../controllers/firebase';
 import { Ionicons } from '@expo/vector-icons'; 
 
+import SpinnerApp from '../components/spinnerapp';
+
 
 
 
@@ -24,7 +26,8 @@ class Login extends React.Component {
 			password:"9876543",
             speciality:"",
             iconShowOrHidePassword:"eye-outline",
-            showPassword:true
+            showPassword:true,
+            spinner: false
         };
 
         this.handleChangeText = this.handleChangeText.bind(this);
@@ -135,9 +138,11 @@ class Login extends React.Component {
             alert('El usuario o contraseña no es válido');
             return;
         }else{
+            this.setState({ spinner: true});
             const user = firebase.db.collection('medicalstaff');
             const snapshot = await user.where('email', '==', this.state.email).where('password', '==', this.state.password).get();
             if (snapshot.empty) {
+                this.setState({ spinner: false});
                 alert("El usuario o contraseña no está registrado")
                 return;
             }
@@ -159,7 +164,11 @@ class Login extends React.Component {
                         active: doc.data().active,
                         password1: doc.data().password
                     });
-                    this.props.navigation.navigate('Home');
+                    setTimeout(() => {
+                        this.setState({ spinner: false}),
+                        this.props.navigation.navigate('Home', {screen: 'Home'});
+                    }, 2000);
+                    
                 });
             };
         };
@@ -167,48 +176,57 @@ class Login extends React.Component {
 
 
     render(){
-        return (
-            <View style={styles.container}>
-                <SwiperImage />	
-                <View style={styles.inputGroup}>
-                    <TextInput
-                        style={styles.textInput} 
-                        placeholder="Email"
-                        onChangeText={value => this.handleChangeText("email",  this.lowerCaseEmail(value))}
-                        value={this.state.email}
-                    />
-                </View>
-                <View style={[styles.inputGroup, {flexDirection:'row', alignItems:'center'}]}>
-                    <TextInput 
-                        style={[styles.textInput, {position:'absolute'}]}
-                        placeholder="Contraseña"
-                        secureTextEntry={this.state.showPassword}
-                        onChangeText={value => this.handleChangeText("password", value)}
-                        value={this.state.password}
-                    />
-                    <View style={styles.iconShoworhidePassword}>
-                        {this.iconShowOrHidePassword()}
+        if(this.state.spinner){
+            return(
+                <SpinnerApp/>
+            );
+        }
+        else{
+            return (
+                <View style={styles.container}>
+                    
+                    <SwiperImage />	
+                    <View style={styles.inputGroup}>
+                        <TextInput
+                            style={styles.textInput} 
+                            placeholder="Email"
+                            onChangeText={value => this.handleChangeText("email",  this.lowerCaseEmail(value))}
+                            value={this.state.email}
+                        />
+                    </View>
+                    <View style={[styles.inputGroup, {flexDirection:'row', alignItems:'center'}]}>
+                        <TextInput 
+                            style={[styles.textInput, {position:'absolute'}]}
+                            placeholder="Contraseña"
+                            secureTextEntry={this.state.showPassword}
+                            onChangeText={value => this.handleChangeText("password", value)}
+                            value={this.state.password}
+                        />
+                        <View style={styles.iconShoworhidePassword}>
+                            {this.iconShowOrHidePassword()}
+                        </View>
+                    </View>
+                    <TouchableOpacity onPress={() => this.verifyTextInputIsEmpty()}>
+                        <View style={styles.buttonLogin}>
+                            <Text style={styles.textButtonRegister}>
+                                LOGIN
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+                    <View style={styles.containerTextGoToRegister}>
+                        <Text style={[styles.textInput, {color: '#585858'}]}>
+                            No tienes una cuenta?
+                        </Text>
+                        <Text 
+                            style={styles.textGoToRegister}
+                            onPress={() => this.navigateToRegister()}>
+                            Registrate
+                        </Text>
                     </View>
                 </View>
-                <TouchableOpacity onPress={() => this.verifyTextInputIsEmpty()}>
-					<View style={styles.buttonLogin}>
-						<Text style={styles.textButtonRegister}>
-							LOGIN
-						</Text>
-					</View>
-				</TouchableOpacity>
-                <View style={styles.containerTextGoToRegister}>
-					<Text style={[styles.textInput, {color: '#585858'}]}>
-						No tienes una cuenta?
-					</Text>
-					<Text 
-						style={styles.textGoToRegister}
-						onPress={() => this.navigateToRegister()}>
-						Registrate
-					</Text>
-				</View>
-            </View>
-        );
+            );
+        }
+        
     };
 };
 
@@ -248,7 +266,7 @@ const styles = StyleSheet.create({
 		color: '#2E64FE',
 		fontWeight: "100",
 		textDecorationLine: "underline",
-		paddingLeft:10
+		paddingLeft:30
     },
     containerTextGoToRegister:{
 		flexDirection: 'row',
@@ -282,7 +300,16 @@ const styles = StyleSheet.create({
     iconShoworhidePassword:{
         position: 'absolute',
 		right: 25
-    }
+    },
+    spinnerTextStyle: {
+        color: '#2E64FE'
+      },
+      containerspinner: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#F5FCFF'
+      },
 });	
 
 

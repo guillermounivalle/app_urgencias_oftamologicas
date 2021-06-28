@@ -9,25 +9,35 @@ class Header extends React.Component {
 		super(props);
 
 		this.state={
-			isModalVisible: false
+			isModalUserVisible: false,
+			isModalMenuVisible: false
 		}
 
 		this.openMenu = this.openMenu.bind(this);
 		this.userOption = this.userOption.bind(this);
 		this.changeModalVisible = this.changeModalVisible.bind(this);
+		this.navigationToScreenSelected = this.navigationToScreenSelected.bind(this)
 	}
 
-	changeModalVisible = (bool) => {
-		this.setState({isModalVisible: bool});
-		
-	}
+	changeModalVisible = (option, bool) => {
+		if(option == "user"){
+			this.setState({isModalUserVisible: bool});
+			return;
+		};
+		if(option == "menu"){
+			this.setState({isModalMenuVisible: bool});
+			return;
+		};
+	};
 
 	openMenu = () => {
+		this.changeModalVisible("menu", !this.state.isModalMenuVisible);
+		//console.log('isModalMenuVisible ====> ' + this.state.isModalMenuVisible);
 		console.log('on press menu Icon');
 	};
 
 	userOption = () => {
-		this.changeModalVisible(!this.state.isModalVisible)
+		this.changeModalVisible("user", !this.state.isModalUserVisible);
 		console.log('on press User option');
 	};
 
@@ -43,41 +53,81 @@ class Header extends React.Component {
 		});
 	};
 
+	navigationToScreenSelected = (module) => {
+		console.log('=====> navigate' + module);
+		this.props.navigation.navigate(module, {screen: 'module'});
+	};
+
 	render(){
 		return(
 		<View style={styles.header}>
-				<MaterialIcons 
+			<MaterialIcons 
 				name='menu' 
 				size={30}
+				color='#5882FA'
 				onPress={() => this.openMenu()}
 				style={styles.iconMenu}/>	
+				<Modal
+					transparent={true}
+					animationType='fade'
+					visible={this.state.isModalMenuVisible}
+					onRequestClose={()=> this.changeModalVisible("menu", false)}>
+						<View style={[styles.viewModal, {left:10, height: 315, width:screen.width*0.60}]}>
+							<ModalPicker
+								style={[styles.viewModal, {left:10}]}
+								changeModalVisible={this.changeModalVisible}
+								modalModuleCall="menu"
+								navigationToScreenSelected={this.navigationToScreenSelected}>
+							</ModalPicker>
+						</View>
+				</Modal>
 			<View>
 				<Text style={styles.headertext}>Home</Text>
 			</View>
 			<FontAwesome 
 				name="user-circle" 
 				size={30}
+				color='#5882FA'
 				onPress={() => this.userOption()}
 				style={styles.iconUser}/>
 				<Modal
-						style={styles.centeredViewModal}
-						transparent={true}
-						animationType='fade'
-						visible={this.state.isModalVisible}
-						onRequestClose={()=> this.changeModalVisible(false)}>
-						<View style={styles.centeredViewModal}>
-						<ModalPicker
-							style={styles.centeredViewModal}
-							changeModalVisible={this.changeModalVisible}
-							modalModuleCall="user"
-							logoutSession={this.logoutSession}>
-						</ModalPicker>
+					transparent={true}
+					animationType='fade'
+					visible={this.state.isModalUserVisible}
+					onRequestClose={()=> this.changeModalVisible("user", false)}>
+						<View style={[styles.viewModal, {right:10}]}>
+							<ModalPicker
+								style={[styles.viewModal, {right:10}]}
+								changeModalVisible={this.changeModalVisible}
+								modalModuleCall="user"
+								logoutSession={this.logoutSession}>
+							</ModalPicker>
 						</View>
-					</Modal> 
+				</Modal>
+  
 		</View>
 		);
 	};
 };
+
+/**
+ * <Modal
+					style={styles.centeredViewModal}
+					transparent={true}
+					animationType='fade'
+					visible={this.state.isModalUserVisible}
+					onRequestClose={()=> this.changeModalVisible("user", false)}>
+						<View style={styles.centeredViewModal}>
+							<ModalPicker
+								style={styles.centeredViewModal}
+								changeModalVisible={this.changeModalVisible}
+								modalModuleCall="user"
+								logoutSession={this.logoutSession}>
+							</ModalPicker>
+						</View>
+				</Modal>
+ */
+
 
 const screen = Dimensions.get('screen');
 
@@ -103,7 +153,7 @@ const styles = StyleSheet.create({
 		position: 'absolute',
 		right: 10
 	},
-	centeredViewModal: {
+	viewModal: {
 		width:screen.width /2, 
 		height: 190,
 		borderRadius: 10,
@@ -112,9 +162,8 @@ const styles = StyleSheet.create({
 		elevation: 3,
 		backgroundColor:"#fff",
 		position:'absolute',
-		right:10,
 		marginTop: 50
-	  },
+	  }
 });
 
 export default Header;

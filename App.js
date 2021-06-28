@@ -3,10 +3,11 @@ import { StyleSheet } from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 
-import Register from './screens/Register';
-import Login from './screens/Login';
-import Home from './screens/Home';
 
+import Main from './screens/Main';
+
+
+//Components
 import Header from './components/header';
 
 import { LogBox } from 'react-native';
@@ -27,56 +28,17 @@ const Stack = createStackNavigator();
 class App extends React.Component{
 	constructor(props){
 		super(props);
-		this.state={
-			session: true,
-			initialRoute: ""
-		};
-
-	}
+			}
 	
-	UNSAFE_componentWillMount(){
-		auth.onAuthStateChanged((user)=>{
-			if(user){
-				this.setState({initialRoute: "Home"});
-				console.log('Usuario logueado');
-				console.log('user 1===> ' + JSON.stringify(user));
-			}
-			else{
-				this.setState({initialRoute: "Login"});
-				console.log('Usuario no logueado');
-				console.log('user2 ===> ' + JSON.stringify(user));
-			}
-		})
-	} 
-//
+	
+
 	render(){
 		LogBox.ignoreLogs(['Setting a timer for a long period of time']);
-		const routeInital = this.state.initialRoute;
 		return(
 			<Provider store = {store}>
-				<NavigationContainer>
-					<Stack.Navigator
-					initialRouteName={routeInital}
-					screenOptions= {{
-				  		headerTitle: ()=> <Header/>,
-							headerLeft: null
-					}}>
-						<Stack.Screen  
-					  		options={{title: "log in"}} 
-							name="Login" 
-							component={Login}/>	
-						<Stack.Screen  
-					  		options={{title: "Home"}} 
-							name="Home" 
-							component={Home}/>		
-						<Stack.Screen 
-							options={{title: "Registro"}} 
-							name="Register" 
-							component={Register}/>	
-				</Stack.Navigator>
-			</NavigationContainer>
-		</Provider>
-		);
+				<Main/>
+			</Provider>
+			);
 		};	
 	};
 	

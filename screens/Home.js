@@ -2,6 +2,7 @@ import React from 'react'
 import { View, Text, Dimensions, ScrollView, StyleSheet, TouchableHighlight, Image} from 'react-native';
 import SwiperImage from '../components/swiperimage';
 import { auth }from '../controllers/firebase';
+import { Fontisto } from '@expo/vector-icons'; 
 
 
 
@@ -18,6 +19,7 @@ class Home extends React.Component {
     };
 
     isClickedModuleOptions = (module) => {
+        this.props.navigation.navigate(module, {screen: 'module'});
         console.log('Haz clieckeado el módulo ' + module);
     };
 
@@ -27,7 +29,7 @@ class Home extends React.Component {
                 <View style={styles.viewRow}>
                     <TouchableHighlight 
                         style={styles.touchableLeft} 
-                        onPress={() => this.isClickedModuleOptions('Gestion')}
+                        onPress={() => this.isClickedModuleOptions('UserManager')}
                         underlayColor="white">
                         <View style={{alignItems:'center'}}>
                             <Image 
@@ -38,7 +40,7 @@ class Home extends React.Component {
                     </TouchableHighlight>
                     <TouchableHighlight 
                         style={styles.touchableRight} 
-                        onPress={() => this.isClickedModuleOptions('Reportes')}
+                        onPress={() => this.isClickedModuleOptions('Reports')}
                         underlayColor="white">
                         <View style={{alignItems:'center'}}>
                             <Image 
@@ -55,18 +57,16 @@ class Home extends React.Component {
     }
 
     render(){
+        
         return(
             <View style={styles.container}>
                 <SwiperImage />	
-                <View styles={{marginBottom: 20}}>
-                    <Text style={styles.textSelectModule}>Selecciona un módulo</Text>
-                </View>
                 <ScrollView style={styles.scrollView}>
                     {this.adminOptions()}
                     <View style={styles.viewRow}>
                         <TouchableHighlight 
                             style={styles.touchableLeft} 
-                            onPress={() => this.isClickedModuleOptions('Datospaciente')}
+                            onPress={() => this.isClickedModuleOptions('PatientData')}
                             underlayColor="white">
                             <View style={{alignItems:'center'}}>
                                 <Image 
@@ -77,7 +77,7 @@ class Home extends React.Component {
                         </TouchableHighlight>
                         <TouchableHighlight 
                             style={styles.touchableRight} 
-                            onPress={() => this.isClickedModuleOptions('Evaluacion')}
+                            onPress={() => this.isClickedModuleOptions('Evaluation')}
                             underlayColor="white">
                             <View style={{alignItems:'center'}}>
                                 <Image 
@@ -90,7 +90,7 @@ class Home extends React.Component {
                     <View style={styles.viewRow}>
                         <TouchableHighlight 
                             style={styles.touchableLeft} 
-                            onPress={() => this.isClickedModuleOptions('Control')}
+                            onPress={() => this.isClickedModuleOptions('HomeControl')}
                             underlayColor="white">
                             <View style={{alignItems:'center'}}>
                                 <Image 
@@ -101,7 +101,7 @@ class Home extends React.Component {
                         </TouchableHighlight>
                         <TouchableHighlight 
                             style={styles.touchableRight} 
-                            onPress={() => this.isClickedModuleOptions('Hospitalización')}
+                            onPress={() => this.isClickedModuleOptions('Hospitalization')}
                             underlayColor="white">
                             <View style={{alignItems:'center'}}>
                                 <Image 
@@ -114,7 +114,7 @@ class Home extends React.Component {
                     <View style={styles.viewRow}>
                         <TouchableHighlight 
                             style={styles.touchableLeft} 
-                            onPress={() => this.isClickedModuleOptions('Cirugia')}
+                            onPress={() => this.isClickedModuleOptions('Surgery')}
                             underlayColor="white">
                             <View style={{alignItems:'center'}}>
                                 <Image 

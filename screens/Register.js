@@ -8,6 +8,7 @@ import {ModalPicker} from '../components/modalPicker';
 import { auth }from '../controllers/firebase';
 import { Ionicons } from '@expo/vector-icons'; 
 
+import SpinnerApp from '../components/spinnerapp';
 
 
 
@@ -28,7 +29,8 @@ class Register extends React.Component{
 			admin: false,
 			isModalVisible: false,
 			iconShowOrHidePassword:"eye-outline",
-            showPassword:true
+            showPassword:true,
+			spinner: false
 		};
 		
 
@@ -176,6 +178,7 @@ class Register extends React.Component{
 			alert('El email ingresado no está escrito correctamente');
 			this.setState({email:""})
 		}else{
+			this.setState({ spinner: true});
 			await firebase.db.collection('medicalstaff').doc(id).set({
 				name: this.state.name,
 				lastname: this.state.lastname,
@@ -190,12 +193,17 @@ class Register extends React.Component{
 				.then(()=> {
 					console.log("Document successfully written!");
 					alert('User have been saved');
-					this.resetInput();
-					this.props.navigation.navigate('Home');
+					
+					setTimeout(() => {
+						this.setState({ spinner: false}),
+                        this.props.navigation.navigate('Home'),
+						this.resetInput();
+                    }, 2000);
 				})
 				.catch((error) => { 
 				var errorCode = error.code;
 				var errorMessage = error.message;
+				this.setState({ spinner: false});
 				console.log('ErrorCode ==> '+ errorCode + " ErrorMessage ===> " + errorMessage );
 				});
 			})
@@ -208,109 +216,116 @@ class Register extends React.Component{
 	};
 	
 	render(){
-		return (
-			<View style={styles.container}>
-				<SwiperImage />
-				<ScrollView style={{flex:1}}>
-				<View style={styles.inputGroup}>
-					<TextInput
-						style={styles.textInput}
-						placeholderTextColor="#A4A4A4"
-						placeholder="id"
-						keyboardType={"number-pad"}
-						onChangeText={value => this.handleChangeText("id", value)}
-						value={this.state.id}/>
-				</View>
-				<View style={styles.inputGroup}>
-					<TextInput 
-						style={styles.textInput}
-						placeholderTextColor = "#A4A4A4"
-						placeholder="Nombre"
-						onChangeText={value => this.handleChangeText("name", value)}
-						value={this.state.name}/>
-				</View>
-				<View style={styles.inputGroup}>
-					<TextInput 
-						style={styles.textInput}
-						placeholderTextColor = "#A4A4A4"
-						placeholder="Apellido"
-						onChangeText={value => this.handleChangeText("lastname", value)}
-						value={this.state.lastname}/>
-				</View>
-				<View style={styles.inputGroup}>
-					<TextInput 
-						style={styles.textInput}
-						placeholderTextColor = "#A4A4A4"
-						placeholder="Email"
-						onChangeText={value => this.handleChangeText("email", this.lowerCaseEmail(value))}
-						value={this.state.email}/>
-				</View>
-				<View style={[styles.inputGroup, {flexDirection:'row', alignItems:'center'}]}>
-                    <TextInput 
-                        style={[styles.textInput, {position:'absolute'}]}
-						placeholder="Contraseña"
-						placeholderTextColor = "#A4A4A4"
-                        secureTextEntry={this.state.showPassword}
-                        onChangeText={value => this.handleChangeText("password", value)}
-                        value={this.state.password}
-                    />
-                    <View style={styles.iconShoworhidePassword}>
-                        {this.iconShowOrHidePassword()}
-                    </View>
-                </View>
-				<View style={[styles.inputGroup, {flexDirection:'row', alignItems:'center'}]}>
-                    <TextInput 
-                        style={[styles.textInput, {position:'absolute'}]}
-						placeholder="Confirmar Contraseña"
-						placeholderTextColor = "#A4A4A4"
-                        secureTextEntry={this.state.showPassword}
-                        onChangeText={value => this.handleChangeText("validatepassword", value)}
-                        value={this.state.validatepassword}
-                    />
-                    <View style={styles.iconShoworhidePassword}>
-                        {this.iconShowOrHidePassword()}
-                    </View>
-                </View>
-				<View style={styles.inputGroup}>
-					<TouchableOpacity
-						onPress={()=> this.changeModalVisible(true)}>
-						<Text style={{color:this.state.colorTextSpeciality, fontSize:20}}>{this.state.speciality}</Text>
-					</TouchableOpacity>
-					<Modal
-						style={styles.centeredViewModal}
-						transparent={true}
-						animationType='fade'
-						visible={this.state.isModalVisible}
-						onRequestClose={()=> this.changeModalVisible(false)}>
-						<View style={styles.centeredViewModal}>
-						<ModalPicker
-							changeModalVisible={this.changeModalVisible}
-							setData={this.setData}
-							modalModuleCall="register">
-						</ModalPicker>
+		if(this.state.spinner){
+            return(
+                <SpinnerApp/>
+            );
+        }
+        else{
+			return (
+				<View style={styles.container}>
+					<SwiperImage />
+					<ScrollView style={{flex:1}}>
+					<View style={styles.inputGroup}>
+						<TextInput
+							style={styles.textInput}
+							placeholderTextColor="#A4A4A4"
+							placeholder="id"
+							keyboardType={"number-pad"}
+							onChangeText={value => this.handleChangeText("id", value)}
+							value={this.state.id}/>
+					</View>
+					<View style={styles.inputGroup}>
+						<TextInput 
+							style={styles.textInput}
+							placeholderTextColor = "#A4A4A4"
+							placeholder="Nombre"
+							onChangeText={value => this.handleChangeText("name", value)}
+							value={this.state.name}/>
+					</View>
+					<View style={styles.inputGroup}>
+						<TextInput 
+							style={styles.textInput}
+							placeholderTextColor = "#A4A4A4"
+							placeholder="Apellido"
+							onChangeText={value => this.handleChangeText("lastname", value)}
+							value={this.state.lastname}/>
+					</View>
+					<View style={styles.inputGroup}>
+						<TextInput 
+							style={styles.textInput}
+							placeholderTextColor = "#A4A4A4"
+							placeholder="Email"
+							onChangeText={value => this.handleChangeText("email", this.lowerCaseEmail(value))}
+							value={this.state.email}/>
+					</View>
+					<View style={[styles.inputGroup, {flexDirection:'row', alignItems:'center'}]}>
+						<TextInput 
+							style={[styles.textInput, {position:'absolute'}]}
+							placeholder="Contraseña"
+							placeholderTextColor = "#A4A4A4"
+							secureTextEntry={this.state.showPassword}
+							onChangeText={value => this.handleChangeText("password", value)}
+							value={this.state.password}
+						/>
+						<View style={styles.iconShoworhidePassword}>
+							{this.iconShowOrHidePassword()}
 						</View>
-					</Modal> 
-				</View>
-				<TouchableHighlight onPress={() => this.verifyTextInputIsEmpty()}>
-						<View style={styles.buttonRegister}>
-							<Text style={styles.textButtonRegister}>
-								REGISTRAR CUENTA
-							</Text>
+					</View>
+					<View style={[styles.inputGroup, {flexDirection:'row', alignItems:'center'}]}>
+						<TextInput 
+							style={[styles.textInput, {position:'absolute'}]}
+							placeholder="Confirmar Contraseña"
+							placeholderTextColor = "#A4A4A4"
+							secureTextEntry={this.state.showPassword}
+							onChangeText={value => this.handleChangeText("validatepassword", value)}
+							value={this.state.validatepassword}
+						/>
+						<View style={styles.iconShoworhidePassword}>
+							{this.iconShowOrHidePassword()}
 						</View>
-				</TouchableHighlight>
-				<View style={styles.containerTextGoToLogin}>
-					<Text style={[styles.textInput, {color: '#585858'}]}>
-						Tienes una cuenta?
-					</Text>
-					<Text 
-						style={styles.textGoToLogin}
-						onPress={() => this.navigateToLogin()}>
-						Login
-					</Text>
+					</View>
+					<View style={styles.inputGroup}>
+						<TouchableOpacity
+							onPress={()=> this.changeModalVisible(true)}>
+							<Text style={{color:this.state.colorTextSpeciality, fontSize:20}}>{this.state.speciality}</Text>
+						</TouchableOpacity>
+						<Modal
+							style={styles.centeredViewModal}
+							transparent={true}
+							animationType='fade'
+							visible={this.state.isModalVisible}
+							onRequestClose={()=> this.changeModalVisible(false)}>
+							<View style={styles.centeredViewModal}>
+							<ModalPicker
+								changeModalVisible={this.changeModalVisible}
+								setData={this.setData}
+								modalModuleCall="register">
+							</ModalPicker>
+							</View>
+						</Modal> 
+					</View>
+					<TouchableHighlight onPress={() => this.verifyTextInputIsEmpty()}>
+							<View style={styles.buttonRegister}>
+								<Text style={styles.textButtonRegister}>
+									REGISTRAR CUENTA
+								</Text>
+							</View>
+					</TouchableHighlight>
+					<View style={styles.containerTextGoToLogin}>
+						<Text style={[styles.textInput, {color: '#585858'}]}>
+							Tienes una cuenta?
+						</Text>
+						<Text 
+							style={styles.textGoToLogin}
+							onPress={() => this.navigateToLogin()}>
+							Login
+						</Text>
+					</View>
+				</ScrollView>
 				</View>
-			</ScrollView>
-			</View>
-			);
+				);
+			}	
 		}
 	};
 	
